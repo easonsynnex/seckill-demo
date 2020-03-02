@@ -6,7 +6,7 @@ package com.eason.seckill.seckill.entity;
  * @Description:
  */
 public class User {
-    private Integer id;
+    private String id;
     private String nickName;
     private String password;
     private String salt;
@@ -15,11 +15,11 @@ public class User {
     private String lastLoginDate;
     private Integer loginCount;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

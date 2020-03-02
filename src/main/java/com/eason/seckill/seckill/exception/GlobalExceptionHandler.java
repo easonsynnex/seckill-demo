@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     public Result<String> exceptionHandler(HttpServletRequest request, BindException e){
         LOGGER.error("BindException:", e);
 
-        return Result.error(CodeMsg.ARGUMENT_ERROR);
+        return Result.error(CodeMsg.ARGUMENT_ERROR.fillArgs(e.getAllErrors().get(0).getDefaultMessage()));
     }
 
     @ExceptionHandler(Exception.class)

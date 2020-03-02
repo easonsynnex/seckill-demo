@@ -5,6 +5,7 @@ import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.dao.GoodsDao;
 import com.eason.seckill.seckill.entity.Good;
 import com.eason.seckill.seckill.config.redis.RedisService;
+import com.eason.seckill.seckill.vo.GoodVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,9 @@ public class GoodsService {
         LOGGER.info("第一个商品名字:{}", good1.get(0).getGoodsName());
 
         return allGoods;
+    }
+
+    public List<GoodVo> getAllSeckillGoods() {
+        return goodsDao.getAllSeckillGoods();
     }
 }

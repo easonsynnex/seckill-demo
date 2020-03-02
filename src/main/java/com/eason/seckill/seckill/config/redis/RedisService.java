@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @Date: Created in 22:00 2020/2/23
  * @Description:
  */
-@Component
+@Service
 public class RedisService {
     private final static Logger LOGGER = LoggerFactory.getLogger(RedisService.class);
 

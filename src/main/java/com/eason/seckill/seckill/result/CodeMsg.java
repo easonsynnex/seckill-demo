@@ -22,6 +22,10 @@ public class CodeMsg {
         this.msg = msg;
     }
 
+    public CodeMsg fillArgs(String str){
+        return new CodeMsg(this.code, this.getMsg() +":" + str);
+    }
+
     public int getCode() {
         return code;
     }

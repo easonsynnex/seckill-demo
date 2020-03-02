@@ -14,5 +14,5 @@ import org.apache.ibatis.annotations.Select;
 public interface UsersDao {
 
     @Select("select * from miaosha_user where id=#{id}")
-    User getUserByMobile(@Param("id") int mobile);
+    User getUserByMobile(@Param("id") String mobile);
 }

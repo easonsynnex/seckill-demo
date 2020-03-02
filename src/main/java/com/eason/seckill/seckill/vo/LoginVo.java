@@ -13,16 +13,17 @@ import javax.validation.constraints.Pattern;
 public class LoginVo {
 
     @Pattern(regexp = "1\\d{10}")
-    private int mobile;
+    private String mobile;
+
     @NotNull
-    @Length(min = 6,max = 15)
+    @Length(min = 6)
     private String password;
 
-    public int getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(int mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
