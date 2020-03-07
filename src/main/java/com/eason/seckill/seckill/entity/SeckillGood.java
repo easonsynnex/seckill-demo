@@ -1,28 +1,34 @@
-package com.eason.seckill.seckill.vo;
-
-import com.eason.seckill.seckill.entity.Good;
+package com.eason.seckill.seckill.entity;
 
 import java.util.Date;
 
 /**
  * @Author: eason
- * @Date: Created in 21:52 2020/3/2
- * @Description:
+ * @Date: Created in 21:49 2020/3/3
+ * @Description: `miaosha_goods`表
  */
-public class GoodVo  extends Good{
+public class SeckillGood {
+    long id;
+    long goodsId;
     double miaoshaPrice;
     Integer stockCount;
     Date startDate;
     Date endDate;
-    //秒杀状态 (1-未开始秒杀 2-秒杀中 3-秒杀结束)
-    int status;
 
-    public int getStatus() {
-        return status;
+    public long getId() {
+        return id;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(long goodsId) {
+        this.goodsId = goodsId;
     }
 
     public double getMiaoshaPrice() {
@@ -55,16 +61,5 @@ public class GoodVo  extends Good{
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    @Override
-    public String toString() {
-        return "GoodVo{" +
-                "miaoshaPrice=" + miaoshaPrice +
-                ", stockCount=" + stockCount +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", status=" + status +
-                '}';
     }
 }

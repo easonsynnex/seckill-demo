@@ -3,13 +3,13 @@ package com.eason.seckill.seckill.entity;
 /**
  * @Author: eason
  * @Date: Created in 19:56 2020/2/23
- * @Description: 商品信息类
+ * @Description: 商品信息类 goods表
  */
 public class Good {
     /**
      * 商品ID
      */
-    private Integer id;
+    private long id;
     /**
      * 商品名字
      */
@@ -17,25 +17,37 @@ public class Good {
     /**
      * 商品标题
      */
-    private String goodTitle;
+    private String goodsTitle;
     /**
      * 商品图片路径
      */
-    private String goodImg;
+    private String goodsImg;
     /**
      * 商品详情
      */
-    private String goodDetail;
+    private String goodsDetail;
     /**
      * 库存
      */
     private int goodsStock;
 
-    public Integer getId() {
+    @Override
+    public String toString() {
+        return "Good{" +
+                "id=" + id +
+                ", goodsName='" + goodsName + '\'' +
+                ", goodsTitle='" + goodsTitle + '\'' +
+                ", goodsImg='" + goodsImg + '\'' +
+                ", goodsDetail='" + goodsDetail + '\'' +
+                ", goodsStock=" + goodsStock +
+                '}';
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -47,28 +59,28 @@ public class Good {
         this.goodsName = goodsName;
     }
 
-    public String getGoodTitle() {
-        return goodTitle;
+    public String getGoodsTitle() {
+        return goodsTitle;
     }
 
-    public void setGoodTitle(String goodTitle) {
-        this.goodTitle = goodTitle;
+    public void setGoodsTitle(String goodsTitle) {
+        this.goodsTitle = goodsTitle;
     }
 
-    public String getGoodImg() {
-        return goodImg;
+    public String getGoodsImg() {
+        return goodsImg;
     }
 
-    public void setGoodImg(String goodImg) {
-        this.goodImg = goodImg;
+    public void setGoodsImg(String goodsImg) {
+        this.goodsImg = goodsImg;
     }
 
-    public String getGoodDetail() {
-        return goodDetail;
+    public String getGoodsDetail() {
+        return goodsDetail;
     }
 
-    public void setGoodDetail(String goodDetail) {
-        this.goodDetail = goodDetail;
+    public void setGoodsDetail(String goodsDetail) {
+        this.goodsDetail = goodsDetail;
     }
 
     public int getGoodsStock() {
@@ -77,17 +89,5 @@ public class Good {
 
     public void setGoodsStock(int goodsStock) {
         this.goodsStock = goodsStock;
-    }
-
-    @Override
-    public String toString() {
-        return "Good{" +
-                "id=" + id +
-                ", goodsName='" + goodsName + '\'' +
-                ", goodTitle='" + goodTitle + '\'' +
-                ", goodImg='" + goodImg + '\'' +
-                ", goodDetail='" + goodDetail + '\'' +
-                ", goodsStock=" + goodsStock +
-                '}';
     }
 }

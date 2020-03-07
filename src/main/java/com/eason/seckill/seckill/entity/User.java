@@ -3,10 +3,10 @@ package com.eason.seckill.seckill.entity;
 /**
  * @Author: eason
  * @Date: Created in 16:26 2020/2/28
- * @Description:
+ * @Description: `miaosha_user`表
  */
 public class User {
-    private String id;
+    private long id;
     private String nickName;
     private String password;
     private String salt;
@@ -15,11 +15,11 @@ public class User {
     private String lastLoginDate;
     private Integer loginCount;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

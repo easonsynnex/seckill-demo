@@ -5,6 +5,7 @@ import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.dao.GoodsDao;
 import com.eason.seckill.seckill.entity.Good;
 import com.eason.seckill.seckill.config.redis.RedisService;
+import com.eason.seckill.seckill.entity.SeckillGood;
 import com.eason.seckill.seckill.vo.GoodVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,5 +41,31 @@ public class GoodsService {
 
     public List<GoodVo> getAllSeckillGoods() {
         return goodsDao.getAllSeckillGoods();
+    }
+
+    public GoodVo getGoodDetailById(long id) {
+        GoodVo good = goodsDao.getSeckillGoodById(id);
+        LOGGER.info("获取到的秒杀商品信息:"+good.toString());
+        //判断秒杀状态
+        long now = System.currentTimeMillis();
+        long start = good.getStartDate().getTime();
+        long end = good.getEndDate().getTime();
+
+        //未开始
+        if(now < start){
+            good.setStatus(1);
+        }else if(now > end){
+            //已结束
+            good.setStatus(3);
+        }else{
+            //进行中
+            good.setStatus(2);
+        }
+
+        return good;
+    }
+
+    public void subtractOneGood(SeckillGood seckillGood){
+        goodsDao.subtractOneGood(seckillGood);
     }
 }
