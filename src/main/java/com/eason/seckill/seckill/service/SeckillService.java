@@ -2,11 +2,9 @@ package com.eason.seckill.seckill.service;
 
 import com.eason.seckill.seckill.config.redis.RedisService;
 import com.eason.seckill.seckill.config.redis.keys.UsersKey;
-import com.eason.seckill.seckill.entity.Good;
-import com.eason.seckill.seckill.entity.OrderInfo;
-import com.eason.seckill.seckill.entity.SeckillGood;
-import com.eason.seckill.seckill.entity.User;
+import com.eason.seckill.seckill.entity.*;
 import com.eason.seckill.seckill.exception.GlobalException;
+import com.eason.seckill.seckill.result.Result;
 import com.eason.seckill.seckill.vo.GoodVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Date;
 
 import static com.eason.seckill.seckill.service.UserService.TOKEN_NAME;
 
@@ -34,8 +34,11 @@ public class SeckillService {
     @Autowired
     SeckillOrderService seckillOrderService;
 
+    @Autowired
+    OrderInfoService orderInfoService;
+
     @Transactional(rollbackFor = {Exception.class})
-    public void doSeckill(HttpServletRequest request, long goodsId){
+    public Result doSeckill(HttpServletRequest request, long goodsId){
         User currentUser = getCurrentUser(request);
         //1.先判断库存
         GoodVo goodDetail = goodsService.getGoodDetailById(goodsId);
@@ -53,20 +56,34 @@ public class SeckillService {
         goodsService.subtractOneGood(seckillGood);
 
         //4.下订单
-        createOrder(currentUser, goodsId);
+        createOrder(currentUser, goodDetail);
+
+        return Result.success("秒杀成功");
     }
 
     /**
      * 下订单到order_info，再写入秒杀订单miaosha_order
      * @param currentUser
-     * @param goodsId
+     * @param
      */
-    private void createOrder(User currentUser, long goodsId) {
+    private void createOrder(User currentUser, GoodVo good) {
         OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setGoodsId(goodsId);
+        orderInfo.setGoodsId(good.getGoodsId());
         orderInfo.setUserId(currentUser.getId());
         orderInfo.setGoodsCount(1);
-        orderInfo.set
+        orderInfo.setGoodsName(good.getGoodsName());
+        orderInfo.setOrderChannel(0);
+        orderInfo.setGoodsPrice(good.getMiaoshaPrice());
+        orderInfo.setCreateDate(new Date());
+        orderInfo.setStatus(0);
+        //先下订单到order_info表
+        int orderId = orderInfoService.saveOrderIndo(orderInfo);
+        //再写到秒杀秒中
+        SeckillOrder seckillOrder = new SeckillOrder();
+        seckillOrder.setGoodsId(good.getGoodsId());
+        seckillOrder.setUserId(currentUser.getId());
+        seckillOrder.setOrderId(orderInfo.getId());
+        seckillOrderService.saveSeckillOrder(seckillOrder);
     }
 
     /**

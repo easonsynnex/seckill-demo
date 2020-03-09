@@ -1,5 +1,6 @@
 package com.eason.seckill.seckill.controller;
 
+import com.eason.seckill.seckill.result.Result;
 import com.eason.seckill.seckill.service.SeckillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +24,7 @@ public class SeckillController {
     SeckillService seckillService;
 
     @PostMapping("/doSeckill")
-    public void doSeckill(HttpServletRequest request,@RequestParam("goodsId") long goodsId){
-        seckillService.doSeckill(request, goodsId);
-
+    public Result doSeckill(HttpServletRequest request, @RequestParam("goodsId") long goodsId){
+        return seckillService.doSeckill(request, goodsId);
     }
-
 }

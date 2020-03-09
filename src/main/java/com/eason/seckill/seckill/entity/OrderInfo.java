@@ -11,13 +11,22 @@ public class OrderInfo {
     long id;
     long userId;
     long goodsId;
-    String goodName;
+    long deliveryAddrId;
+    String goodsName;
     int goodsCount;
     double goodsPrice;
     int orderChannel;
     int status;
     Date createDate;
     Date payDate;
+
+    public long getDeliveryAddrId() {
+        return deliveryAddrId;
+    }
+
+    public void setDeliveryAddrId(long deliveryAddrId) {
+        this.deliveryAddrId = deliveryAddrId;
+    }
 
     public long getId() {
         return id;
@@ -43,12 +52,12 @@ public class OrderInfo {
         this.goodsId = goodsId;
     }
 
-    public String getGoodName() {
-        return goodName;
+    public String getGoodsName() {
+        return goodsName;
     }
 
-    public void setGoodName(String goodName) {
-        this.goodName = goodName;
+    public void setGoodsName(String goodsName) {
+        this.goodsName = goodsName;
     }
 
     public int getGoodsCount() {

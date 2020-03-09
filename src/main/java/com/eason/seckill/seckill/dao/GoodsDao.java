@@ -24,7 +24,7 @@ public interface GoodsDao {
     @Select("select mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date from miaosha_goods mg left join goods g on mg.goods_id=g.id")
     List<GoodVo> getAllSeckillGoods();
 
-    @Select("select mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date from miaosha_goods mg inner join goods g on mg.goods_id=g.id and g.id=#{id}")
+    @Select("select mg.goods_id,mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date from miaosha_goods mg inner join goods g on mg.goods_id=g.id and g.id=#{id}")
     GoodVo getSeckillGoodById(@Param("id") long id);
 
     @Update("update miaosha_goods set stock_count = stock_count - 1 where goods_id=#{goodsId} and stock_count > 0")

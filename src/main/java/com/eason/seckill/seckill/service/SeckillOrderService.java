@@ -4,6 +4,7 @@ import com.eason.seckill.seckill.config.redis.RedisService;
 import com.eason.seckill.seckill.config.redis.keys.UsersKey;
 import com.eason.seckill.seckill.dao.SeckillOrderDao;
 import com.eason.seckill.seckill.entity.SeckillGood;
+import com.eason.seckill.seckill.entity.SeckillOrder;
 import com.eason.seckill.seckill.entity.User;
 import com.eason.seckill.seckill.exception.GlobalException;
 import com.eason.seckill.seckill.vo.GoodVo;
@@ -31,5 +32,9 @@ public class SeckillOrderService {
 
     public boolean isSeckilled(long userId, long goodsId){
         return seckillOrderDao.getSeckillOrderByUserIdAndGoodsId(userId, goodsId) == 0;
+    }
+
+    public void saveSeckillOrder(SeckillOrder seckillOrder) {
+        seckillOrderDao.saveSeckillOrder(seckillOrder);
     }
 }

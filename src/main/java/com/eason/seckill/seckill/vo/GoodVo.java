@@ -10,12 +10,21 @@ import java.util.Date;
  * @Description:
  */
 public class GoodVo  extends Good{
+    long goodsId;
     double miaoshaPrice;
     Integer stockCount;
     Date startDate;
     Date endDate;
     //秒杀状态 (1-未开始秒杀 2-秒杀中 3-秒杀结束)
     int status;
+
+    public long getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(long goodsId) {
+        this.goodsId = goodsId;
+    }
 
     public int getStatus() {
         return status;

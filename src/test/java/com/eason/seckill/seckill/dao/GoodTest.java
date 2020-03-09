@@ -27,4 +27,6 @@ public class GoodTest {
         List<Good> allGoods = goodsDao.getAllGoods();
         Assert.assertEquals(2, allGoods.size());
     }
+
+    
 }
