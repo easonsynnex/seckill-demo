@@ -9,6 +9,15 @@ public class GoodsKey extends BasePrefix {
     public GoodsKey(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
+    //所有商品
     public static final GoodsKey goodsList = new GoodsKey(60, "gl");
+    //所有商品cache
+    public static final GoodsKey goodsListCache = new GoodsKey(60, "glc");
+    //商品
+    public static final GoodsKey good = new GoodsKey(60, "good");
+    //所有秒杀商品cache
+    public static final GoodsKey seckillGoodsListCache = new GoodsKey(60, "sglc");
+    //秒杀商品详情cache
+    public static final GoodsKey seckillGoodsDetailCache = new GoodsKey(60, "sgdc");
 
 }

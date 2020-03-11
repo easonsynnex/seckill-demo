@@ -14,6 +14,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import static com.eason.seckill.seckill.config.redis.keys.UsersKey.TOKEN_EXPIRE;
 import static com.eason.seckill.seckill.service.UserService.TOKEN_NAME;
 
@@ -47,18 +51,19 @@ public class LoginInterceptor extends HandlerInterceptorAdapter{
      */
     private boolean isLogin(HttpServletRequest request, HttpServletResponse response){
         Cookie[] cookies = request.getCookies();
-        if(cookies != null && cookies.length > 0){
-            for (Cookie cookie : cookies) {
-                if (TOKEN_NAME.equals(cookie.getName())) {
-                    String token = cookie.getValue();
-                    User user = redisService.get(UsersKey.TOKEN, token, User.class);
-                    if (user != null) {
-                        addCookie(response, token, user);
-                        return true;
-                    }
-                }
-            }
+        if(cookies == null){
+            return false;
         }
+        String token = Arrays.stream(cookies)
+                .filter(cookie -> TOKEN_NAME.equals(cookie.getName()))
+                .map(cookie -> cookie.getValue())
+                .findFirst().get();
+        User user = redisService.get(UsersKey.TOKEN, token, User.class);
+        if (user != null) {
+            addCookie(response, token, user);
+            return true;
+        }
+
         return false;
     }
 
