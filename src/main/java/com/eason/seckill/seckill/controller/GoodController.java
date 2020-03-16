@@ -3,6 +3,7 @@ package com.eason.seckill.seckill.controller;
 import com.eason.seckill.seckill.config.redis.RedisService;
 import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.entity.Good;
+import com.eason.seckill.seckill.kafka.KafkaProvider;
 import com.eason.seckill.seckill.service.GoodsService;
 import com.eason.seckill.seckill.vo.GoodVo;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,9 @@ public class GoodController {
 
     @Autowired
     RedisService redisService;
+
+    @Autowired
+    KafkaProvider kafkaProvider;
 
     @Autowired
     ThymeleafViewResolver thymeleafViewResolver;
@@ -72,6 +76,7 @@ public class GoodController {
     @ResponseBody
     public String detail(@PathVariable("id") long id,HttpServletRequest request, HttpServletResponse response, Model model){
         GoodVo goodDetail = goodsService.getGoodDetailById(id);
+        kafkaProvider.send(goodDetail);
         model.addAttribute("goods_detail", goodDetail);
         String html = getHtmlCode("goods_detail",model,GoodsKey.seckillGoodsDetailCache,request,response);
 
