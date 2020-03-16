@@ -28,6 +28,9 @@ public class GoodsService {
     @Autowired
     RedisService redisUtils;
 
+    @Autowired
+    RedisService redisService;
+
     public List<Good> getAllGoods(){
         List<Good> allGoods = goodsDao.getAllGoods();
         LOGGER.info("获取到所有的商品列表信息:{}", allGoods);
@@ -43,26 +46,53 @@ public class GoodsService {
         return goodsDao.getAllSeckillGoods();
     }
 
+    /**
+     * 获取秒杀商品信息，缓存有则读缓存，无则读数据库
+     * @param id
+     * @return
+     */
     public GoodVo getGoodDetailById(long id) {
-        GoodVo good = goodsDao.getSeckillGoodById(id);
-        LOGGER.info("获取到的秒杀商品信息:"+good.toString());
+        GoodVo seckillGoods = getSeckillGoodsFromRedis(id);
+        if(seckillGoods == null){
+            seckillGoods = goodsDao.getSeckillGoodById(id);
+            addSeckillGoodToRedis(seckillGoods);
+        }
+        LOGGER.info("获取到的秒杀商品信息:"+seckillGoods.toString());
         //判断秒杀状态
         long now = System.currentTimeMillis();
-        long start = good.getStartDate().getTime();
-        long end = good.getEndDate().getTime();
+        long start = seckillGoods.getStartDate().getTime();
+        long end = seckillGoods.getEndDate().getTime();
 
         //未开始
         if(now < start){
-            good.setStatus(1);
+            seckillGoods.setStatus(1);
         }else if(now > end){
             //已结束
-            good.setStatus(3);
+            seckillGoods.setStatus(3);
         }else{
             //进行中
-            good.setStatus(2);
+            seckillGoods.setStatus(2);
         }
 
+        return seckillGoods;
+    }
+
+    /**
+     * 从缓存中获取秒杀商品信息
+     * @param id 商品ID
+     * @return
+     */
+    public GoodVo getSeckillGoodsFromRedis(long id){
+        GoodVo good = redisService.get(GoodsKey.good, String.valueOf(id), GoodVo.class);
         return good;
+    }
+
+    /**
+     * 将秒杀商品信息放入缓存中
+     * @param goodVo
+     */
+    public void addSeckillGoodToRedis(GoodVo goodVo){
+        redisService.set(GoodsKey.good, String.valueOf(goodVo.getGoodsId()), goodVo);
     }
 
     public void subtractOneGood(SeckillGood seckillGood){

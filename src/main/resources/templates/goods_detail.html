@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>秒杀商品列表</title>
+</head>
+<body>
+<table>
+    <tr th:each="good : ${goods_detail}">
+        <td th:text="${good.goodsName}">${good.goodsName}</td>
+        <td th:text="${good.miaoshaPrice}">${good.goodsTitle}</td>
+        <td th:text="${good.stockCount}">${good.goodsDetail}</td>
+    </tr>
+</table>
+</body>
+</html>
