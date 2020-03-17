@@ -1,11 +1,15 @@
 package com.eason.seckill.seckill.service;
 
 import com.eason.seckill.seckill.config.redis.RedisService;
+import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.config.redis.keys.UsersKey;
 import com.eason.seckill.seckill.entity.*;
 import com.eason.seckill.seckill.exception.GlobalException;
+import com.eason.seckill.seckill.kafka.KafkaProvider;
+import com.eason.seckill.seckill.result.CodeMsg;
 import com.eason.seckill.seckill.result.Result;
 import com.eason.seckill.seckill.vo.GoodVo;
+import com.eason.seckill.seckill.vo.SeckillMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,26 +41,40 @@ public class SeckillService {
     @Autowired
     OrderInfoService orderInfoService;
 
+    @Autowired
+    KafkaProvider kafkaProvider;
+
     @Transactional(rollbackFor = {Exception.class})
     public Result doSeckill(HttpServletRequest request, long goodsId){
         User currentUser = getCurrentUser(request);
-        //1.先判断库存
+        //从缓存中预减库存
+        Long stock = redisService.desc(GoodsKey.seckillGoodsCount, String.valueOf(goodsId));
+        if(stock < 0){
+            return Result.error(CodeMsg.SECKILL_OVER);
+        }
+
+        /*//1.先判断库存
         GoodVo goodDetail = goodsService.getGoodDetailById(goodsId);
         if(goodDetail.getStockCount() <= 0){
             throw new GlobalException("商品库存不足");
-        }
+        }*/
         //2.是否已秒杀过了
         boolean isSeckilled = seckillOrderService.isSeckilled(currentUser.getId(), goodsId);
         if(isSeckilled){
             throw new GlobalException("请勿重复秒杀");
         }
+        //秒杀消息入队
+        /*SeckillMessage seckillMessage = new SeckillMessage();
+        seckillMessage.setUser(currentUser);
+        seckillMessage.setGoodId(goodsId);
+        kafkaProvider.send(seckillMessage);
         //3.更新库存
         SeckillGood seckillGood = new SeckillGood();
         seckillGood.setGoodsId(goodsId);
         goodsService.subtractOneGood(seckillGood);
 
         //4.下订单
-        createOrder(currentUser, goodDetail);
+        createOrder(currentUser, goodDetail);*/
 
         return Result.success("秒杀成功");
     }

@@ -19,5 +19,8 @@ public class GoodsKey extends BasePrefix {
     public static final GoodsKey seckillGoodsListCache = new GoodsKey(60, "sglc");
     //秒杀商品详情cache
     public static final GoodsKey seckillGoodsDetailCache = new GoodsKey(60, "sgdc");
+    //秒杀商品数量
+    public static final GoodsKey seckillGoodsCount = new GoodsKey(60, "sgc");
+
 
 }

@@ -1,6 +1,7 @@
 package com.eason.seckill.seckill.config.redis;
 
 import com.alibaba.fastjson.JSON;
+import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.config.redis.keys.KeyPrefix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,16 @@ public class RedisService {
     }
 
     private String assembleKey(KeyPrefix keyprefix ,String key){
-        return keyprefix.getClass().getSimpleName() + ":" + key;
+        return keyprefix.getClass().getSimpleName() + ":" + keyprefix.getPrefix() + ":" + key;
+    }
+
+    public static void main(String[] args) {
+        RedisService a = new RedisService();
+        System.out.println(a.getClass().getSimpleName());
+    }
+
+    public Long desc(KeyPrefix keyPrefix, String key) {
+        String key = assembleKey(keyPrefix, key);
+        return redisTemplate.opsForValue().decrement(key);
     }
 }

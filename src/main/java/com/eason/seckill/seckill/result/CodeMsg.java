@@ -16,6 +16,7 @@ public class CodeMsg {
     public static final CodeMsg USER_OR_PASSWORD_ERROR = new CodeMsg(100120,"用户名或密码不正确");
 
     public static final CodeMsg LOGIN_SUCCESS = new CodeMsg(600100,"登录成功");
+    public static final CodeMsg SECKILL_OVER = new CodeMsg(600100,"秒杀结束");
 
     public CodeMsg(int code, String msg) {
         this.code = code;

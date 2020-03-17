@@ -76,7 +76,7 @@ public class GoodController {
     @ResponseBody
     public String detail(@PathVariable("id") long id,HttpServletRequest request, HttpServletResponse response, Model model){
         GoodVo goodDetail = goodsService.getGoodDetailById(id);
-        kafkaProvider.send(goodDetail);
+        //kafkaProvider.send(goodDetail);
         model.addAttribute("goods_detail", goodDetail);
         String html = getHtmlCode("goods_detail",model,GoodsKey.seckillGoodsDetailCache,request,response);
 
