@@ -21,7 +21,7 @@ public interface GoodsDao {
     @Select("select * from goods")
     List<Good> getAllGoods();
 
-    @Select("select mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date from miaosha_goods mg left join goods g on mg.goods_id=g.id")
+    @Select("select mg.goods_id,mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date,g.goods_name from miaosha_goods mg left join goods g on mg.goods_id=g.id")
     List<GoodVo> getAllSeckillGoods();
 
     @Select("select g.goods_name,mg.goods_id,mg.miaosha_price,mg.stock_count,mg.start_date,mg.end_date from miaosha_goods mg inner join goods g on mg.goods_id=g.id and g.id=#{id}")

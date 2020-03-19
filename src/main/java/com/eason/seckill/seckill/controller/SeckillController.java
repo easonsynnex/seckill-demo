@@ -1,14 +1,13 @@
 package com.eason.seckill.seckill.controller;
 
+import com.eason.seckill.seckill.result.CodeMsg;
 import com.eason.seckill.seckill.result.Result;
 import com.eason.seckill.seckill.service.SeckillService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 /**
@@ -24,7 +23,11 @@ public class SeckillController {
     SeckillService seckillService;
 
     @PostMapping("/doSeckill")
-    public Result doSeckill(HttpServletRequest request, @RequestParam("goodsId") long goodsId){
-        return seckillService.doSeckill(request, goodsId);
+    public Result doSeckill(HttpServletRequest request, @RequestBody Map param){
+        if(param == null){
+            return Result.error(CodeMsg.ARGUMENT_ERROR);
+        }
+        long goodsId = Long.parseLong(param.get("goodsId").toString());
+        return seckillService.doSeckillToQueue(request, goodsId);
     }
 }

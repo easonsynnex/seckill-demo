@@ -31,7 +31,7 @@ public class SeckillOrderService {
     SeckillOrderDao seckillOrderDao;
 
     public boolean isSeckilled(long userId, long goodsId){
-        return seckillOrderDao.getSeckillOrderByUserIdAndGoodsId(userId, goodsId) == 0;
+        return seckillOrderDao.getSeckillOrderByUserIdAndGoodsId(userId, goodsId) != 0;
     }
 
     public void saveSeckillOrder(SeckillOrder seckillOrder) {

@@ -27,10 +27,9 @@ public class SeckillGoodsInit implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         List<GoodVo> seckillGoods = goodsDao.getAllSeckillGoods();
-        for (GoodVo good :
-                seckillGoods) {
-            logger.info("初始化秒杀商品:{} ,秒杀数量:{}", good.getGoodsName(), good.getGoodsStock());
-            redisService.set(GoodsKey.seckillGoodsCount, "" + good.getId(), good.getStockCount());
+        for (GoodVo good : seckillGoods) {
+            logger.info("初始化秒杀商品:{} ,秒杀数量:{}", good.getGoodsName(), good.getStockCount());
+            redisService.set(GoodsKey.seckillGoodsCount, "" + good.getGoodsId(), good.getStockCount());
         }
     }
 }

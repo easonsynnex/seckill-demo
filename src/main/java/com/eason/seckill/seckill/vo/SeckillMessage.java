@@ -4,7 +4,7 @@ import com.eason.seckill.seckill.entity.User;
 
 public class SeckillMessage {
     private User user;
-    private Long goodId;
+    private Long goodsId;
 
     public User getUser() {
         return user;
@@ -14,11 +14,11 @@ public class SeckillMessage {
         this.user = user;
     }
 
-    public Long getGoodId() {
-        return goodId;
+    public Long getGoodsId() {
+        return goodsId;
     }
 
-    public void setGoodId(Long goodId) {
-        this.goodId = goodId;
+    public void setGoodsId(Long goodsId) {
+        this.goodsId = goodsId;
     }
 }

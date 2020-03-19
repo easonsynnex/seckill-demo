@@ -14,9 +14,12 @@ public class CodeMsg {
     public static final CodeMsg ARGUMENT_ERROR = new CodeMsg(100100,"参数校验失败");
     public static final CodeMsg NOT_FOUND_USER_ERROR = new CodeMsg(100110,"该用户不存在");
     public static final CodeMsg USER_OR_PASSWORD_ERROR = new CodeMsg(100120,"用户名或密码不正确");
+    public static final CodeMsg USER_NOT_LOGIN = new CodeMsg(100130,"用户名未登录");
 
     public static final CodeMsg LOGIN_SUCCESS = new CodeMsg(600100,"登录成功");
-    public static final CodeMsg SECKILL_OVER = new CodeMsg(600100,"秒杀结束");
+    public static final CodeMsg SECKILL_OVER = new CodeMsg(600110,"秒杀结束");
+    public static final CodeMsg SECKILL_SUCCESS = new CodeMsg(600120,"秒杀成功");
+    public static final CodeMsg SECKILL_REPEAT = new CodeMsg(600130,"重复秒杀");
 
     public CodeMsg(int code, String msg) {
         this.code = code;

@@ -95,7 +95,7 @@ public class GoodsService {
         redisService.set(GoodsKey.good, String.valueOf(goodVo.getGoodsId()), goodVo);
     }
 
-    public void subtractOneGood(SeckillGood seckillGood){
-        goodsDao.subtractOneGood(seckillGood);
+    public boolean subtractOneGood(SeckillGood seckillGood){
+        return goodsDao.subtractOneGood(seckillGood) == 1;
     }
 }

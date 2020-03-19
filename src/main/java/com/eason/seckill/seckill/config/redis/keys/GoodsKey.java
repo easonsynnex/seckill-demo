@@ -9,6 +9,11 @@ public class GoodsKey extends BasePrefix {
     public GoodsKey(int expireSeconds, String prefix) {
         super(expireSeconds, prefix);
     }
+
+    public GoodsKey(String prefix) {
+        super(prefix);
+    }
+
     //所有商品
     public static final GoodsKey goodsList = new GoodsKey(60, "gl");
     //所有商品cache
@@ -20,7 +25,7 @@ public class GoodsKey extends BasePrefix {
     //秒杀商品详情cache
     public static final GoodsKey seckillGoodsDetailCache = new GoodsKey(60, "sgdc");
     //秒杀商品数量
-    public static final GoodsKey seckillGoodsCount = new GoodsKey(60, "sgc");
+    public static final GoodsKey seckillGoodsCount = new GoodsKey("sgc");
 
 
 }

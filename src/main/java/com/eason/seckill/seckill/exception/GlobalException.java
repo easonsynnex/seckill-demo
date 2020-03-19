@@ -13,6 +13,11 @@ public class GlobalException extends RuntimeException {
     public GlobalException(String message) {
         super(message);
     }
+    public GlobalException(CodeMsg codeMsg) {
+        super(codeMsg.getMsg());
+        this.codeMsg = codeMsg;
+    }
+
 
     public CodeMsg getCodeMsg() {
         return codeMsg;

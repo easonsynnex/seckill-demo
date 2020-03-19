@@ -1,13 +1,11 @@
 package com.eason.seckill.seckill.config.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.eason.seckill.seckill.config.redis.keys.GoodsKey;
 import com.eason.seckill.seckill.config.redis.keys.KeyPrefix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -43,7 +41,7 @@ public class RedisService {
         return t;
     }
 
-    private <T> T StringToBean(Object val, Class<T> clazz) {
+    public static <T> T StringToBean(Object val, Class<T> clazz) {
         String value = String.valueOf(val);
         if(clazz == int.class || clazz == Integer.class){
             return (T) Integer.valueOf(value);
@@ -57,10 +55,36 @@ public class RedisService {
         }
     }
 
+    /**
+     * set 需要判断value类型
+     * @param value
+     * @param <T>
+     * @return
+     */
+    private <T> Object beanToString(T value){
+        Class<? extends Object> clazz = value.getClass();
+        if(clazz == int.class || clazz == Integer.class){
+            return value;
+        }else if(clazz == long.class || clazz == Long.class){
+            return value;
+        }else if(clazz == String.class){
+            return (String)value;
+        }else{
+            //返回对象
+            return JSON.toJSONString(value);
+        }
+    }
+
     public boolean set(KeyPrefix keyprefix, String key, Object value){
         key = assembleKey(keyprefix,key);
+        Object val = beanToString(value);
         try{
-            redisTemplate.opsForValue().set(key, JSON.toJSONString(value), keyprefix.getExpireSeconds(), TimeUnit.SECONDS);
+            int expireSeconds = keyprefix.getExpireSeconds();
+            if(expireSeconds > 0 ) {
+                redisTemplate.opsForValue().set(key, val, keyprefix.getExpireSeconds(), TimeUnit.SECONDS);
+            }else{
+                redisTemplate.opsForValue().set(key, val);
+            }
             return true;
         }catch (Exception e){
             LOGGER.error("Set value to Redis ERROR:{}", e);
@@ -69,7 +93,7 @@ public class RedisService {
     }
 
     private String assembleKey(KeyPrefix keyprefix ,String key){
-        return keyprefix.getClass().getSimpleName() + ":" + keyprefix.getPrefix() + ":" + key;
+        return keyprefix.getPrefix() + ":" + key;
     }
 
     public static void main(String[] args) {
@@ -78,7 +102,13 @@ public class RedisService {
     }
 
     public Long desc(KeyPrefix keyPrefix, String key) {
-        String key = assembleKey(keyPrefix, key);
-        return redisTemplate.opsForValue().decrement(key);
+        String realKey = assembleKey(keyPrefix, key);
+        Long decrement = redisTemplate.opsForValue().increment(realKey, -1L);
+        return decrement;
+    }
+    public Long incr(KeyPrefix keyPrefix, String key) {
+        String realKey = assembleKey(keyPrefix, key);
+        Long decrement = redisTemplate.opsForValue().increment(realKey, 1L);
+        return decrement;
     }
 }

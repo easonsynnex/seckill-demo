@@ -18,8 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.eason.seckill.seckill.result.CodeMsg.*;
 import static com.eason.seckill.seckill.service.UserService.TOKEN_NAME;
 
 /**
@@ -44,13 +45,23 @@ public class SeckillService {
     @Autowired
     KafkaProvider kafkaProvider;
 
+    private ConcurrentHashMap<Long, Boolean> goodsOverFlag = new ConcurrentHashMap<>();
+
     @Transactional(rollbackFor = {Exception.class})
-    public Result doSeckill(HttpServletRequest request, long goodsId){
+    public Result doSeckillToQueue(HttpServletRequest request, long goodsId){
         User currentUser = getCurrentUser(request);
+        if(currentUser == null){
+            return Result.error(USER_NOT_LOGIN);
+        }
+        //为了减少对redis的访问加上一个秒杀完的标记
+        if(!goodsOverFlag.get(goodsId)){
+            return Result.error(SECKILL_OVER);
+        }
         //从缓存中预减库存
         Long stock = redisService.desc(GoodsKey.seckillGoodsCount, String.valueOf(goodsId));
         if(stock < 0){
-            return Result.error(CodeMsg.SECKILL_OVER);
+            goodsOverFlag.put(goodsId, true);
+            return Result.error(SECKILL_OVER);
         }
 
         /*//1.先判断库存
@@ -61,14 +72,15 @@ public class SeckillService {
         //2.是否已秒杀过了
         boolean isSeckilled = seckillOrderService.isSeckilled(currentUser.getId(), goodsId);
         if(isSeckilled){
-            throw new GlobalException("请勿重复秒杀");
+            redisService.incr(GoodsKey.seckillGoodsCount, String.valueOf(goodsId));
+            throw new GlobalException(SECKILL_REPEAT);
         }
         //秒杀消息入队
-        /*SeckillMessage seckillMessage = new SeckillMessage();
+        SeckillMessage seckillMessage = new SeckillMessage();
         seckillMessage.setUser(currentUser);
-        seckillMessage.setGoodId(goodsId);
+        seckillMessage.setGoodsId(goodsId);
         kafkaProvider.send(seckillMessage);
-        //3.更新库存
+        /*//3.更新库存
         SeckillGood seckillGood = new SeckillGood();
         seckillGood.setGoodsId(goodsId);
         goodsService.subtractOneGood(seckillGood);
@@ -76,7 +88,25 @@ public class SeckillService {
         //4.下订单
         createOrder(currentUser, goodDetail);*/
 
-        return Result.success("秒杀成功");
+        return Result.success("排队中");
+    }
+
+    @Transactional
+    public Result<CodeMsg> doSeckillToDb(SeckillMessage message){
+        Long goodsId = message.getGoodsId();
+        //先更新库存
+        SeckillGood seckillGood = new SeckillGood();
+        seckillGood.setGoodsId(goodsId);
+        boolean subtract = goodsService.subtractOneGood(seckillGood);
+        if(!subtract){
+            goodsOverFlag.put(goodsId, true);
+            return Result.error(SECKILL_OVER);
+        }
+        //下订单
+        GoodVo goodDetail = goodsService.getGoodDetailById(goodsId);
+        createOrder(message.getUser(), goodDetail);
+
+        return Result.success(SECKILL_SUCCESS);
     }
 
     /**
@@ -92,7 +122,7 @@ public class SeckillService {
         orderInfo.setGoodsName(good.getGoodsName());
         orderInfo.setOrderChannel(0);
         orderInfo.setGoodsPrice(good.getMiaoshaPrice());
-        orderInfo.setCreateDate(new Date());
+        //orderInfo.setCreateDate(new Date());
         orderInfo.setStatus(0);
         //先下订单到order_info表
         int orderId = orderInfoService.saveOrderIndo(orderInfo);

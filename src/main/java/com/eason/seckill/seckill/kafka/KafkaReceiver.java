@@ -1,5 +1,8 @@
 package com.eason.seckill.seckill.kafka;
 
+import com.eason.seckill.seckill.config.redis.RedisService;
+import com.eason.seckill.seckill.service.SeckillService;
+import com.eason.seckill.seckill.vo.SeckillMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +18,15 @@ public class KafkaReceiver {
     @Autowired
     KafkaTemplate<String, Object> kafkaTemplate;
 
+    @Autowired
+    SeckillService seckillService;
+
     @KafkaListener(topics = {KafkaProvider.TOPIC_SECKILL})
     public void listen(ConsumerRecord<String, Object> record){
-        Object value = record.value();
-        if(value != null){
-            logger.info("consumer receive msg from provider :{}", value);
+        SeckillMessage msg = RedisService.StringToBean(record.value(), SeckillMessage.class);
+        if(msg != null){
+            logger.info("consumer receive msg from provider :{}", msg);
         }
+        seckillService.doSeckillToDb(msg);
     }
 }
