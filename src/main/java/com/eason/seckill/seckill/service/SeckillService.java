@@ -132,6 +132,9 @@ public class SeckillService {
         seckillOrder.setUserId(currentUser.getId());
         seckillOrder.setOrderId(orderInfo.getId());
         seckillOrderService.saveSeckillOrder(seckillOrder);
+
+        //缓存秒杀结果
+        redisService.set(GoodsKey.seckillGoodsResult, ""+currentUser.getId()+"_"+good.getGoodsId(), seckillOrder);
     }
 
     /**
@@ -157,5 +160,28 @@ public class SeckillService {
         }
 
         return currentUser;
+    }
+
+    /**
+     * 前端定时器来获取秒杀结果 1-秒杀成功 2-秒杀失败 3-排队中
+     * @param request
+     * @param goodsId
+     * @return
+     */
+    public Result getSeckillResult(HttpServletRequest request, long goodsId) {
+        User currentUser = getCurrentUser(request);
+        SeckillOrder seckillOrder = redisService.get(GoodsKey.seckillGoodsResult, "" + currentUser.getId() + "_" + goodsId, SeckillOrder.class);
+        if(seckillOrder != null){
+            //成功
+            return Result.success(0);
+        }else{
+            //秒杀结束
+            if(goodsOverFlag.get(goodsId)){
+                return Result.success(-1);
+            }else{
+                //还在排队中
+                return Result.success(seckillOrder.getOrderId());
+            }
+        }
     }
 }

@@ -30,4 +30,9 @@ public class SeckillController {
         long goodsId = Long.parseLong(param.get("goodsId").toString());
         return seckillService.doSeckillToQueue(request, goodsId);
     }
+
+    @GetMapping("/result/{goodsId}")
+    public Result getSeckillResult(HttpServletRequest request,@PathVariable("goodsId") long goodsId){
+        return seckillService.getSeckillResult(request, goodsId);
+    }
 }
